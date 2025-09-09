@@ -1,8 +1,39 @@
-# React + Vite
+# 🛒 E-commerce con React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación web desarrollada en **React + Vite** que permite visualizar productos, filtrarlos por categoría y añadirlos a un carrito de compras.  
+El diseño es **minimalista en blanco y negro** y está construido con **Tailwind CSS**.  
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Tecnologías utilizadas
+- React  
+- Vite  
+- Tailwind CSS  
+- Zustand (para el carrito de compras)  
+- ESLint  
+
+---
+
+## 🎯 Funcionalidades
+- Listado de productos dinámico  
+- Filtro por categorías  
+- Vista de productos destacados en la página principal  
+- Carrito de compras funcional  
+- Diseño responsive  
+
+---
+
+## 📂 Instalación y uso
+
+```bash
+# Clonar repositorio
+git clone <url-del-repo>
+
+# Entrar a la carpeta
+cd nombre-del-proyecto
+
+# Instalar dependencias
+npm install
+
+# Ejecutar en modo desarrollo
+npm run dev
