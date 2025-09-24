@@ -1,37 +1,46 @@
-import Loading from "../Loading/Loading";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Loading from "../Loading/Loading.jsx";
 import ItemList from "../ItemList/ItemList";
-import { getProductByCategory } from "../../data/asyncMock";
 
 export default function ProductsCategory() {
-    const [loading, setLoading] = useState(true);
-    const [products, setProducts] = useState([]);
-    const [error, setError] = useState(null); 
     const { categoryId } = useParams();
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        setLoading(true);
-        setError(null); 
-        getProductByCategory(categoryId)
-            .then((data) => {
+        const fetchProductsByCategory = async () => {
+            setLoading(true);
+            setError(null);
+
+            let url = 'http://localhost:5000/api/products';
+            if (categoryId && categoryId !== 'Todos') {
+                url = `http://localhost:5000/api/products/category/${encodeURIComponent(categoryId)}`;
+            }
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Error al obtener los productos");
+                const data = await response.json();
                 setProducts(data);
-            })
-            .catch((err) => {
+            } catch (err) {
                 console.error(err);
-                setError('Error al cargar los productos.'); 
-            })
-            .finally(() => {
+                setError("Error al cargar los productos.");
+            } finally {
                 setLoading(false);
-            });
+            }
+        };
+
+        fetchProductsByCategory();
     }, [categoryId]);
 
     return (
         <div className="container mx-auto max-w-[1170px]">
             {loading && <Loading />}
-            {error && <div className="text-red-500">{error}</div>} 
+            {error && <div className="text-red-500">{error}</div>}
             {!loading && !error && products.length === 0 && (
-                <div>No hay productos en esta categoría.</div> 
+                <div>No hay productos en esta categoría.</div>
             )}
             {!loading && !error && products.length > 0 && (
                 <>

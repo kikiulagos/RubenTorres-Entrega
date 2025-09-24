@@ -6,7 +6,7 @@ export default function Logo() {
     return (
         <a href="/" className="milogo">
             <img src={logoSrc} alt="Logo" />
-            <div className="nombre">LP</div>
+            <div className="nombre dark:text-white">LP</div>
         </a>
     );
 }

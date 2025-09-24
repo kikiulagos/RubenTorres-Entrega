@@ -1,52 +1,56 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getProductById } from '../../data/asyncMock.jsx';
 import Loading from '../Loading/Loading.jsx';
 import { useCartStore } from '../../Stores/CartStores'; 
 
 export default function ItemDetail() {
     const { productId } = useParams();
-    const [product, setProduct] = useState({});
+    const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [selectedSize, setSelectedSize] = useState(null);
     const [quantity, setQuantity] = useState(1);
 
     const { addToCart } = useCartStore();  
 
     useEffect(() => {
-        getProductById(productId)
-            .then((data) => {
+        const fetchProduct = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const response = await fetch(`http://localhost:5000/api/products/${productId}`);
+                if (!response.ok) throw new Error('Producto no encontrado');
+                const data = await response.json();
                 setProduct(data);
+            } catch (err) {
+                console.error(err);
+                setError('No se pudo cargar el producto.');
+            } finally {
                 setLoading(false);
-            })
-            .catch((error) => {
-                console.error(error);
-                setLoading(false);
-            });
+            }
+        };
+        fetchProduct();
     }, [productId]);
 
     const decrementQuantity = () => {
-        if (quantity > 1) { 
-            setQuantity(quantity - 1);
-        }
-    }
+        if (quantity > 1) setQuantity(quantity - 1);
+    };
 
     const incrementQuantity = () => {
-        if (quantity < product.stock) {
-            setQuantity(quantity + 1);
-        }
-    }
+        if (product && quantity < product.stock) setQuantity(quantity + 1);
+    };
 
-    const precioTotal = (product.discountPrice || product.price) * quantity;
+    const precioTotal = product ? (product.discountPrice || product.price) * quantity : 0;
 
     const handleAddToCart = () => {
+        if (!product) return;
         if (product.sizes && product.sizes.length > 0 && !selectedSize) {
             alert("Por favor, selecciona una talla antes de agregar al carrito.");
             return;
         }
 
         const productToAdd = {
-            id: product.id,
+            id: product._id,
             name: product.name,
             price: product.price,
             discountPrice: product.discountPrice,
@@ -55,17 +59,12 @@ export default function ItemDetail() {
             quantity,
         };
         addToCart(productToAdd);
-
         alert(`${quantity} unidades de "${product.name}" ${selectedSize ? `con talla "${selectedSize}"` : ''} añadidas al carrito.`);
-    }
+    };
 
-    if (loading) {
-        return <div className='container mx-auto max-w-[1170px]'><Loading /></div>;
-    }
-
-    if (!product.name) {
-        return <div>Producto no encontrado.</div>;
-    }
+    if (loading) return <div className='container mx-auto max-w-[1170px]'><Loading /></div>;
+    if (error) return <div className='text-red-500 text-center mt-4'>{error}</div>;
+    if (!product) return <div>Producto no encontrado.</div>;
 
     return (
         <div className='container mx-auto max-w-[1170px]'>
@@ -100,7 +99,6 @@ export default function ItemDetail() {
                         )}
                         <p className='text-base text-gray-800 my-4'>Stock: <span className='font-semibold'>{product.stock}</span></p>
                     </div>
-    
                     <div className="flex flex-col items-start">
                         <div className='flex items-center mb-4'>
                             <button onClick={decrementQuantity} className='border border-gray-300 text-lg px-3 py-1 transition duration-200 hover:bg-gray-200'>-</button>

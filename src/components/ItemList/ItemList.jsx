@@ -1,6 +1,5 @@
-import PropTypes from 'prop-types'; 
+import PropTypes from 'prop-types';
 import Item from "../Item/Item"; 
-import { getProducts } from "../../data/asyncMock"; 
 import { useEffect, useState } from "react"; 
 import Loading from "../Loading/Loading"; 
 
@@ -12,25 +11,19 @@ export default function ItemList({ products, selectedCategory, onAddToCart }) {
     useEffect(() => {
         if (!products) {
             setLoading(true);
-            getProducts()
-                .then((data) => {
-                    if (Array.isArray(data)) {
-                        if (selectedCategory === 'Todos' || !selectedCategory) {
-                            setFetchedProducts(data);
-                        } else {
-                            setFetchedProducts(data.filter(prod => prod.category === selectedCategory));
-                        }
-                    } else {
-                        setError('Error: no se recibieron productos.');
-                    }
+            let url = 'http://localhost:5000/api/products';
+            if (selectedCategory && selectedCategory !== 'Todos') {
+                url = `http://localhost:5000/api/products/category/${encodeURIComponent(selectedCategory)}`;
+            }
+
+            fetch(url)
+                .then(res => {
+                    if (!res.ok) throw new Error('Error al obtener productos.');
+                    return res.json();
                 })
-                .catch((err) => {
-                    console.error(err);
-                    setError('Error al cargar los productos.');
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
+                .then(data => setFetchedProducts(data))
+                .catch(() => setError('Error al cargar los productos.'))
+                .finally(() => setLoading(false));
         } else {
             setFetchedProducts(products);
         }
@@ -46,11 +39,11 @@ export default function ItemList({ products, selectedCategory, onAddToCart }) {
                 <div>No hay productos disponibles.</div>
             )}
             {!loading && !error && displayedProducts.length > 0 && (
-                <div className="flex flex-wrap">
+                <div className="flex flex-wrap justify-start gap-4">
                     {displayedProducts.map((prod) => (
                         <Item 
-                            key={prod.id} 
-                            id={prod.id} 
+                            key={prod._id} 
+                            id={prod._id}   // <-- MongoDB _id
                             name={prod.name} 
                             price={prod.price} 
                             discountPrice={prod.discountPrice} 

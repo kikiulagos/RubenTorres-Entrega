@@ -1,22 +1,23 @@
-import './Navbar.css'
-import { Link } from 'react-router-dom'
+import './Navbar.css';
+import { Link } from 'react-router-dom';
 
-export default function Navbar(){
-    return(
-        <>
-            <nav>
-                <ul className="menu">
-                    <li><Link to='/'>Home</Link></li>
-                    <li className="mx-[15px] text-[14px] font-normal leading-[20px] uppercase text-[rgb(45,58,75)] transition duration-300 ease-linear hover:text-[rgb(255,225,21)] hover:outline-0 hover:no-underline hover:bg-none">
-                    <Link to="/Products">Products</Link>
-                    </li>
-                    <li className="mx-[15px] text-[14px] font-normal leading-[20px] uppercase text-[rgb(45,58,75)] transition duration-300 ease-linear hover:text-[rgb(255,225,21)] hover:outline-0 hover:no-underline hover:bg-none">
-                    <Link to="/Contact">Contact</Link>
-                    </li>
-                    <li className="mx-[15px] text-[14px] font-normal leading-[20px] uppercase text-[rgb(45,58,75)] transition duration-300 ease-linear hover:text-[rgb(255,225,21)] hover:outline-0 hover:no-underline hover:bg-none">
-                    <Link to="/About">About</Link>
-                    </li>              
-                </ul>
-            </nav>
-        </>)
+export default function Navbar() {
+  return (
+    <nav>
+      <ul className="menu flex gap-4">
+        <li>
+          <Link to="/" className="text-gray-900 dark:text-white hover:text-yellow-400 dark:hover:text-yellow-300">Home</Link>
+        </li>
+        <li>
+          <Link to="/Products" className="text-gray-900 dark:text-white hover:text-yellow-400 dark:hover:text-yellow-300">Products</Link>
+        </li>
+        <li>
+          <Link to="/Contact" className="text-gray-900 dark:text-white hover:text-yellow-400 dark:hover:text-yellow-300">Contact</Link>
+        </li>
+        <li>
+          <Link to="/About" className="text-gray-900 dark:text-white hover:text-yellow-400 dark:hover:text-yellow-300">About</Link>
+        </li>
+      </ul>
+    </nav>
+  );
 }
